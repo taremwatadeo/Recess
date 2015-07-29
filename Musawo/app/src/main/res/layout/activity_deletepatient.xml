@@ -1,0 +1,22 @@
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="tadz.example.com.musawo.Deletepatient">
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="please click on patient to delete"
+        android:textSize="20sp"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/heading"
+        android:layout_marginTop="15sp"
+        android:id="@+id/list_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
