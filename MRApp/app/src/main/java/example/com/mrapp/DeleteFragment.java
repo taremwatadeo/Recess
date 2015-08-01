@@ -2,19 +2,22 @@ package example.com.mrapp;
 
 
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import java.util.ArrayList;
 
 
 public class DeleteFragment extends android.support.v4.app.Fragment {
 
-    MyListAdapter listAdapter;
-    RecyclerView recyclerView;
-    Database pat;
+    ListView listView;
+    ArrayAdapter arrayAdapter;
+    ArrayList arrayList;
+    Database database;
 
 
     public DeleteFragment() {
@@ -28,18 +31,27 @@ public class DeleteFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
        View rootView = inflater.inflate(R.layout.fragment_delete, container, false);
 
-        pat = new Database(getActivity());
+        database = new Database(getActivity());
         try {
-            pat.open();
-            listAdapter = new MyListAdapter(getActivity(), pat.getList());
-            //adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-            pat.close();
-        }catch (Exception e){
-            e.printStackTrace();
+            database.open();
+            arrayList = database.getLists();
+            arrayAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,arrayList);
+            database.close();
+
+        }catch (Exception z){
+            z.printStackTrace();
         }
-        recyclerView = (RecyclerView)rootView.findViewById(R.id.list_view);
-        recyclerView.setAdapter(listAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        listView = (ListView)rootView.findViewById(R.id.list_delete);
+        listView.setAdapter(arrayAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
+            }
+        });
         return rootView;
     }
 

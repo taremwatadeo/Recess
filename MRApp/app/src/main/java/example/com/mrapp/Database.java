@@ -28,10 +28,11 @@ public class Database {
         public static final String TABLE_NAME = "Patient";
         public static final String ID = "pat_id";
         public static final String NAME = "patient_name";
+        public static final String LNAME = "last_name";
         public static final String AGE = "patient_age";
         public static final String DISEASE = "disease";
         public static final String PRESCRIPTION = "prescription";
-        public static final String DRUG = "drug_type";
+        public static final String DATETODAY = "date_today";
         public static final String RETURNDATE = "returndate";
         public static final String REMARKS = "remarks";
 
@@ -62,8 +63,8 @@ public class Database {
             );
 
             db.execSQL("CREATE TABLE " + PatientTable.TABLE_NAME + "(" + PatientTable.ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                            + PatientTable.NAME + " TEXT," + PatientTable.AGE + " INTEGER," + PatientTable.DISEASE + " TEXT," + PatientTable.PRESCRIPTION + " VARCHAR,"
-                            + PatientTable.DRUG + " TEXT," + PatientTable.RETURNDATE + " TEXT," + PatientTable.REMARKS + " TEXT);"
+                            + PatientTable.NAME + " TEXT," + PatientTable.LNAME + " TEXT," + PatientTable.AGE + " INTEGER," + PatientTable.DISEASE + " TEXT," + PatientTable.PRESCRIPTION + " TEXT,"
+                            + PatientTable.DATETODAY + " TEXT," + PatientTable.RETURNDATE + " TEXT," + PatientTable.REMARKS + " TEXT);"
             );
 
         }
@@ -152,16 +153,17 @@ public class Database {
     }
 
 
-    public Long addingPatient(String pname, String page, String pdisease, String pprescription, String pdrug, String preturndate,
+    public Long addingPatient(String pname, String plname ,String page, String pdisease, String pprescription, String pdatetoday, String preturndate,
                               String premarks) throws SQLException {
 
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(PatientTable.NAME, pname);
+        contentValues.put(PatientTable.LNAME, plname);
         contentValues.put(PatientTable.AGE, page);
         contentValues.put(PatientTable.DISEASE, pdisease);
         contentValues.put(PatientTable.PRESCRIPTION, pprescription);
-        contentValues.put(PatientTable.DRUG, pdrug);
+        contentValues.put(PatientTable.DATETODAY, pdatetoday);
         contentValues.put(PatientTable.RETURNDATE, preturndate);
         contentValues.put(PatientTable.REMARKS, premarks);
 
@@ -172,7 +174,7 @@ public class Database {
     public String getPatient() {
 
         String[] col = new String[]{PatientTable.ID, PatientTable.NAME, PatientTable.AGE, PatientTable.DISEASE,
-                PatientTable.PRESCRIPTION, PatientTable.DRUG, PatientTable.RETURNDATE, PatientTable.REMARKS};
+                PatientTable.PRESCRIPTION, PatientTable.DATETODAY, PatientTable.RETURNDATE, PatientTable.REMARKS};
         Cursor x = db.query(PatientTable.TABLE_NAME, col, null, null, null, null, null);
         String result = "";
 
@@ -182,11 +184,11 @@ public class Database {
             int tage = x.getColumnIndex(PatientTable.AGE);
             int tdisease = x.getColumnIndex(PatientTable.DISEASE);
             int tprescription = x.getColumnIndex(PatientTable.PRESCRIPTION);
-            int tdrug = x.getColumnIndex(PatientTable.DRUG);
+            int tdatetoday = x.getColumnIndex(PatientTable.DATETODAY);
             int treturndate = x.getColumnIndex(PatientTable.RETURNDATE);
             int tremarks = x.getColumnIndex(PatientTable.REMARKS);
 
-            result = result + x.getString(tid) + "\t: " + x.getString(tname) + " \n ";
+            result = result + x.getString(tname) + " \n " + x.getString(tdatetoday);
                     /*+ "\n "
                     + x.getString(tage) + "\n " + x.getString(tdisease) + "\n " + x.getString(tprescription) +
                     "\n " + x.getString(tdrug) + "\n " + x.getString(treturndate) + "\n " + x.getString(tremarks) + "\n";
@@ -196,20 +198,21 @@ public class Database {
         return result;
     }
 
+
     public String getDetail(String x) {
         SQLiteDatabase A = ourHelper.getReadableDatabase();
         Cursor z = A.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME + " WHERE " + PatientTable.NAME + "='" + x + "'", null);
         String res = null;
         if (z.moveToFirst()) {
             do {
-                res = z.getString(z.getColumnIndex(PatientTable.DRUG));
+                res = z.getString(z.getColumnIndex(PatientTable.DATETODAY));
             } while (z.moveToNext());
         }
         return res;
     }
 
 
-    public boolean updatep(Integer id, String pname, String page, String pdisease, String pprescription, String pdrug,
+    public boolean updatep(Integer id, String pname, String page, String pdisease, String pprescription, String pdatetoday,
                            String preturndate, String premarks) {
         SQLiteDatabase db = ourHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -218,7 +221,7 @@ public class Database {
         contentValues.put(PatientTable.AGE, page);
         contentValues.put(PatientTable.DISEASE, pdisease);
         contentValues.put(PatientTable.PRESCRIPTION, pprescription);
-        contentValues.put(PatientTable.DRUG, pdrug);
+        contentValues.put(PatientTable.DATETODAY, pdatetoday);
         contentValues.put(PatientTable.RETURNDATE, preturndate);
         contentValues.put(PatientTable.REMARKS, premarks);
 
@@ -265,12 +268,28 @@ public class Database {
         while (cursor.isAfterLast()==false){
 
             array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.NAME)));
+
             cursor.moveToNext();
         }
 
         return array_list;
     }
+    public ArrayList getScheduledPatients() {
 
+        ArrayList array_list = new ArrayList();
+        SQLiteDatabase db = ourHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME ,null);
+
+        cursor.moveToFirst();
+        while (cursor.isAfterLast()==false || cursor.getString(cursor.getColumnIndex(PatientTable.RETURNDATE))!= "") {
+
+
+            array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.NAME)) + (cursor.getString(cursor.getColumnIndex(PatientTable.RETURNDATE))));
+
+            cursor.moveToNext();
+        }
+            return array_list;
+    }
 
 }
 

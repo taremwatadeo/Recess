@@ -17,7 +17,8 @@
     <string name="item_logout">LOG OUT</string>
 
     <string name="title_activity_add_patient">AddPatient</string>
-    <string name="patient_name">Patient\'s Name</string>
+    <string name="patient_name">Patient\'s First Name</string>
+    <string name="patient_lname">Patient\'s Last Name</string>
     <string name="patient_age">Date Of Birth</string>
     <string name="disease">Disease</string>
     <string name="prescription">Prescription</string>

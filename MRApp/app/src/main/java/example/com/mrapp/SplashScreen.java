@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 
-
 public class SplashScreen extends ActionBarActivity {
 
     @Override
@@ -18,7 +17,7 @@ public class SplashScreen extends ActionBarActivity {
         public void run(){
                  try{
 
-                     sleep(5000);
+                     sleep(3000);
 
                  }catch (InterruptedException e){
                      e.printStackTrace();
@@ -30,6 +29,7 @@ public class SplashScreen extends ActionBarActivity {
 
         };
         timer.start();
+
     }
 
 }

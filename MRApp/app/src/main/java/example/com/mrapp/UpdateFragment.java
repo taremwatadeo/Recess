@@ -46,6 +46,9 @@ public class UpdateFragment extends android.support.v4.app.Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+                layoutInflater.inflate(R.layout.fragment_add_patient,parent,false);
+
 
             }
         });

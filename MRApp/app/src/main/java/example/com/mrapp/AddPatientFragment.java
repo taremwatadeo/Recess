@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 
 public class AddPatientFragment extends android.support.v4.app.Fragment {
-    EditText patname,patage,patdisease,patprescription,patdrug,patreturndate,patremarks;
+    EditText patname,patlname,patage,patdisease,patprescription,patdatetoday,patreturndate,patremarks;
     Button save;
 
 
@@ -27,12 +27,13 @@ public class AddPatientFragment extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView =inflater.inflate(R.layout.fragment_add_patient, container, false);
-
+        
         patname = (EditText)rootView.findViewById(R.id.patientname_edt);
+        patlname = (EditText)rootView.findViewById(R.id.patientlname_edt);
         patage = (EditText)rootView.findViewById(R.id.age_edt);
         patdisease=(EditText)rootView.findViewById(R.id.disease_edt);
         patprescription =(EditText)rootView.findViewById(R.id.prescription_edt);
-        patdrug =(EditText)rootView.findViewById(R.id.drug_edt);
+        patdatetoday=(EditText)rootView.findViewById(R.id.datetoday_edt);
         patreturndate=(EditText)rootView.findViewById(R.id.returndate_edt);
         patremarks = (EditText)rootView.findViewById(R.id.remarks_edt);
         save = (Button)rootView.findViewById(R.id.save_btn);
@@ -45,10 +46,11 @@ public class AddPatientFragment extends android.support.v4.app.Fragment {
                     case R.id.save_btn:
                         try {
                             String pname = patname.getText().toString();
+                            String plname = patlname.getText().toString();
                             String page = patage.getText().toString();
                             String pdisease = patdisease.getText().toString();
                             String pprescription = patprescription.getText().toString();
-                            String pdrug = patdrug.getText().toString();
+                            String pdatetoday = patdatetoday.getText().toString();
                             String preturndate = patreturndate.getText().toString();
                             String premarks = patremarks.getText().toString();
                             Database pp = new Database (getActivity());
@@ -56,10 +58,10 @@ public class AddPatientFragment extends android.support.v4.app.Fragment {
 
                             pp.open();
                             if (pname.equals("")||page.equals("")||pdisease.equals("")||pprescription.equals("")
-                                    ||pdrug.equals("")||preturndate.equals("")||premarks.equals("")){
+                                    ||pdatetoday.equals("")||premarks.equals("")){
                                 Toast.makeText(getActivity(),"Fill all fields",Toast.LENGTH_SHORT).show();
                             }else {
-                                Long insertedRow = pp.addingPatient(pname, page, pdisease, pprescription, pdrug, preturndate, premarks);
+                                Long insertedRow = pp.addingPatient(pname,plname ,page, pdisease, pprescription,pdatetoday, preturndate, premarks);
                                 if (insertedRow != -1) {
                                     Intent intent = new Intent(getActivity(), MainActivity.class);
                                     startActivity(intent);
