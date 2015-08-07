@@ -1,6 +1,8 @@
 package example.com.mrapp;
 
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class ScheduleFragment extends android.support.v4.app.Fragment {
@@ -25,16 +28,20 @@ public class ScheduleFragment extends android.support.v4.app.Fragment {
     }
 
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_schedule, container, false);
         database = new Database(getActivity());
+
         try {
             database.open();
-            arrayList = database.getScheduledPatients();
-            arrayAdapter = new ArrayAdapter(getActivity(),android.R.layout.simple_list_item_1,arrayList);
+            if (!Objects.equals(Database.PatientTable.RETURNDATE, "")) {
+                arrayList = database.getScheduledPatients();
+                arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arrayList);
+            }
             database.close();
 
         }catch (Exception z){

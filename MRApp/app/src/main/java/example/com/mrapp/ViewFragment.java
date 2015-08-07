@@ -3,18 +3,23 @@ package example.com.mrapp;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 public class ViewFragment extends android.support.v4.app.Fragment {
+    ListView listView;
+    ArrayAdapter arrayAdapter;
+    ArrayList arrayList;
     Database database;
-    TextView textView,detailtxt;
-    String output,output2;
-    static String detailed = null;
-
 
     public ViewFragment() {
 
@@ -26,49 +31,56 @@ public class ViewFragment extends android.support.v4.app.Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_view, container, false);
-        textClickListener();
-        textView = (TextView)rootView.findViewById(R.id.textView_view);
         //detailtxt = (TextView)rootView.findViewById(R.id.textView_detail);
         database = new Database(getActivity());
 
-        try{
+        try {
             database.open();
-            output = database.getPatient();
+                arrayList = database.getListview();
+                arrayAdapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, arrayList);
+            //database.close();
 
-        }catch (Exception e){
-            output = e.getMessage().toString();
+        }catch (Exception z){
+            z.printStackTrace();
         }
-        textView.setText(output);
 
-        textView.setOnClickListener(new View.OnClickListener() {
+            listView = (ListView) rootView.findViewById(R.id.list_view_view);
+            listView.setAdapter(arrayAdapter);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 try {
-                    database.open();
-                    output2 = output.toString();
-                    detailed = database.getDetail(output2);
-                    database.close();
 
-                if (detailed != null){
+                    long ids = id + 1 ;
 
-                    Dialog dialog = new Dialog(getActivity());
-                    dialog.setTitle("Details");
-                    TextView viewtext = new TextView(getActivity());
-                    viewtext.setText(detailed);
-                    viewtext.setTextSize(25);
-                    dialog.setContentView(viewtext);
-                    dialog.show();
-                }else {
-                    Dialog dialog = new Dialog(getActivity());
-                    dialog.setTitle("Details");
-                    TextView viewtext = new TextView(getActivity());
-                    viewtext.setText("ERROR");
-                    viewtext.setTextSize(25);
-                    dialog.setContentView(viewtext);
-                    dialog.show();
-                }
-                }catch (Exception x) {
-                   String vv = x.getMessage();
+                    String pp = database.getDetail(ids);
+                    if (pp != null) {
+                        Log.v("Error.....",""+ ids);
+                        Dialog dialog = new Dialog(getActivity());
+                        dialog.setTitle("Details");
+                        TextView viewtext = new TextView(getActivity());
+                        viewtext.setText(pp);
+                        viewtext.setTextSize(25);
+                        dialog.setContentView(viewtext);
+                        dialog.setCanceledOnTouchOutside(true);
+                        dialog.show();
+
+                    } else {
+                        Log.v("Error.....",""+id);
+                        Dialog dialog = new Dialog(getActivity());
+                        dialog.setTitle("Details");
+                        TextView viewtext = new TextView(getActivity());
+                        viewtext.setText("Info not available");
+                        viewtext.setTextSize(25);
+                        dialog.setContentView(viewtext);
+                        dialog.show();
+                    }
+
+                } catch (Exception x) {
+                    Log.v("Error.....",""+id);
+                    String vv = x.getMessage();
                     Dialog dialog = new Dialog(getActivity());
                     dialog.setTitle("Details");
                     TextView viewtext = new TextView(getActivity());
@@ -79,15 +91,11 @@ public class ViewFragment extends android.support.v4.app.Fragment {
 
                 }
 
-               // detailtxt = (TextView)dialog.findViewById(R.id.textView_detail);
 
             }
         });
-
         return rootView;
     }
-    public void textClickListener(){
 
-    }
 
 }

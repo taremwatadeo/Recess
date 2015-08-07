@@ -19,7 +19,7 @@ public class SplashScreen extends ActionBarActivity {
 
                      sleep(3000);
 
-                 }catch (InterruptedException e){
+                 }catch (Exception e){
                      e.printStackTrace();
                  }finally {
                      Intent intent = new Intent(SplashScreen.this,LoginScreen.class);

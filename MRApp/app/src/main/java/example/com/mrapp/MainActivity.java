@@ -1,17 +1,23 @@
 package example.com.mrapp;
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -49,24 +55,33 @@ public class MainActivity extends ActionBarActivity implements DrawerFragment.Fr
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        //associate the searchable configuration with the search view
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+        ComponentName componentName = new ComponentName(this, SearchActivity.class);
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(componentName));
+        searchView.setIconifiedByDefault(false);
+
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+
             return true;
         }
 
         if(id == R.id.action_search){
-            Toast.makeText(getApplicationContext(), "Search action is selected!", Toast.LENGTH_SHORT).show();
+
             return true;
         }
 
@@ -88,23 +103,23 @@ public class MainActivity extends ActionBarActivity implements DrawerFragment.Fr
                 break;
             case 1:
                 fragment = new AddPatientFragment();
-                title = getString(R.string.app_name);
+                title = getString(R.string.title_activity_add_patient);
                 break;
             case 2:
                 fragment = new ViewFragment();
-                title = getString(R.string.app_name);
+                title = getString(R.string.title_activity_view_patient);
                 break;
             case 3:
                 fragment = new UpdateFragment();
-                title = getString(R.string.app_name);
+                title = getString(R.string.title_activity_update_patient);
                 break;
             case 4:
                 fragment = new DeleteFragment();
-                title = getString(R.string.app_name);
+                title = getString(R.string.title_activity_delete_patient);
                 break;
             case 5:
                 fragment = new ScheduleFragment();
-                title = getString(R.string.app_name);
+                title = getString(R.string.title_activity_schedule);
                 break;
             case 6:
                 AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
@@ -145,6 +160,7 @@ public class MainActivity extends ActionBarActivity implements DrawerFragment.Fr
             Log.e("MainActivity", "......Error creating fragment");
         }
     }
+
 }
 
 

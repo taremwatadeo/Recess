@@ -6,6 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="search">Search</string>
 
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Close</string>
@@ -16,7 +17,11 @@
     <string name="item_schedule">Scheduled patients</string>
     <string name="item_logout">LOG OUT</string>
 
-    <string name="title_activity_add_patient">AddPatient</string>
+    <string name="title_activity_add_patient">Add Patient</string>
+    <string name="title_activity_view_patient">View Patients</string>
+    <string name="title_activity_delete_patient">Delete Patients</string>
+    <string name="title_activity_update_patient">Update Patients</string>
+    <string name="title_activity_schedule">Scheduled Patients</string>
     <string name="patient_name">Patient\'s First Name</string>
     <string name="patient_lname">Patient\'s Last Name</string>
     <string name="patient_age">Date Of Birth</string>
@@ -64,4 +69,5 @@
     <string name="getpassword">Get Password</string>
     <string name="yourpassword">Your Password Is</string>
     <string name="entersecurityhint">Enter Security Hint</string>
+    <string name="update">Update</string>
 </resources>

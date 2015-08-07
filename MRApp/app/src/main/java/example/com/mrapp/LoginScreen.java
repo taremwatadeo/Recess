@@ -62,6 +62,7 @@ public class LoginScreen extends ActionBarActivity {
                         dialog.setTitle("HELLO");
                         TextView textView = new TextView(LoginScreen.this);
                         textView.setText("please put correct password \n or signup if u have no account");
+                        textView.setTextSize(25);
                         dialog.setContentView(textView);
                         dialog.setCanceledOnTouchOutside(true);
                         dialog.show();
@@ -157,6 +158,11 @@ public class LoginScreen extends ActionBarActivity {
                     dialog.show();
                 }
             });
+    }
+
+    @Override
+    public void onBackPressed(){
+
     }
 
 }

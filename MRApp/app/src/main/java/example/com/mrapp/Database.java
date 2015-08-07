@@ -128,16 +128,12 @@ public class Database {
             }*/
 
 
-    public void deleteEntry(int id) {
+    public void deleteEntry(long id) {
 
         db.delete(PatientTable.TABLE_NAME, PatientTable.ID + "=" + id, null);
 
     }
 
-    public Integer deleteP(Integer id) {
-        SQLiteDatabase db = ourHelper.getReadableDatabase();
-        return db.delete(PatientTable.TABLE_NAME, PatientTable.NAME + "=" + id, null);
-    }
 
 
     public boolean validateUser(String un, String upass) {
@@ -171,48 +167,25 @@ public class Database {
         return db.insert(PatientTable.TABLE_NAME, null, contentValues);
     }
 
-    public String getPatient() {
-
-        String[] col = new String[]{PatientTable.ID, PatientTable.NAME, PatientTable.AGE, PatientTable.DISEASE,
-                PatientTable.PRESCRIPTION, PatientTable.DATETODAY, PatientTable.RETURNDATE, PatientTable.REMARKS};
-        Cursor x = db.query(PatientTable.TABLE_NAME, col, null, null, null, null, null);
-        String result = "";
-
-        for (x.moveToFirst(); !x.isAfterLast(); x.moveToNext()) {
-            int tid = x.getColumnIndex(PatientTable.ID);
-            int tname = x.getColumnIndex(PatientTable.NAME);
-            int tage = x.getColumnIndex(PatientTable.AGE);
-            int tdisease = x.getColumnIndex(PatientTable.DISEASE);
-            int tprescription = x.getColumnIndex(PatientTable.PRESCRIPTION);
-            int tdatetoday = x.getColumnIndex(PatientTable.DATETODAY);
-            int treturndate = x.getColumnIndex(PatientTable.RETURNDATE);
-            int tremarks = x.getColumnIndex(PatientTable.REMARKS);
-
-            result = result + x.getString(tname) + " \n " + x.getString(tdatetoday);
-                    /*+ "\n "
-                    + x.getString(tage) + "\n " + x.getString(tdisease) + "\n " + x.getString(tprescription) +
-                    "\n " + x.getString(tdrug) + "\n " + x.getString(treturndate) + "\n " + x.getString(tremarks) + "\n";
-                    */
-        }
-
-        return result;
-    }
 
 
-    public String getDetail(String x) {
+
+    public String getDetail(long x) {
         SQLiteDatabase A = ourHelper.getReadableDatabase();
-        Cursor z = A.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME + " WHERE " + PatientTable.NAME + "='" + x + "'", null);
+        Cursor z = A.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME + " WHERE " + PatientTable.ID + "='" + x + "'", null);
         String res = null;
         if (z.moveToFirst()) {
             do {
-                res = z.getString(z.getColumnIndex(PatientTable.DATETODAY));
+                res = z.getString(z.getColumnIndex(PatientTable.NAME)) + "\t" + z.getString(z.getColumnIndex(PatientTable.LNAME)) +"\n"
+                        + z.getString(z.getColumnIndex(PatientTable.DISEASE)) + "\n" + z.getString(z.getColumnIndex(PatientTable.PRESCRIPTION)) + "\n"
+                        + z.getString(z.getColumnIndex(PatientTable.RETURNDATE)) + "\n" + z.getString(z.getColumnIndex(PatientTable.REMARKS));
             } while (z.moveToNext());
         }
         return res;
     }
 
 
-    public boolean updatep(Integer id, String pname, String page, String pdisease, String pprescription, String pdatetoday,
+    public boolean updatep(long id, String pname, String page, String pdisease, String pprescription, String pdatetoday,
                            String preturndate, String premarks) {
         SQLiteDatabase db = ourHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -225,8 +198,7 @@ public class Database {
         contentValues.put(PatientTable.RETURNDATE, preturndate);
         contentValues.put(PatientTable.REMARKS, premarks);
 
-        db.update(PatientTable.TABLE_NAME, contentValues, PatientTable.ID + "=" + id, new String[]{
-                Integer.toString(id)});
+        db.update(PatientTable.TABLE_NAME, contentValues, PatientTable.ID + "=" + id, null);
         return true;
     }
 
@@ -243,22 +215,8 @@ public class Database {
         }
         return res;
     }
-        public ArrayList<People> getList() {
 
-        ArrayList<People> array_list = new ArrayList();
-        SQLiteDatabase db = ourHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME ,null);
-        cursor.moveToFirst();
-        while (cursor.isAfterLast()==false){
-            People currentPerson = new People();
-            currentPerson.setId(cursor.getInt(cursor.getColumnIndex(PatientTable.ID)));
-            currentPerson.setNames(cursor.getString(cursor.getColumnIndex(PatientTable.NAME)));
-            array_list.add(currentPerson);
-            cursor.moveToNext();
-        }
 
-        return array_list;
-    }
     public ArrayList getLists() {
 
         ArrayList array_list = new ArrayList();
@@ -267,28 +225,61 @@ public class Database {
         cursor.moveToFirst();
         while (cursor.isAfterLast()==false){
 
-            array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.NAME)));
+            array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.NAME)) + "\t" + cursor.getString(cursor.getColumnIndex(PatientTable.LNAME)));
 
             cursor.moveToNext();
         }
 
         return array_list;
     }
+
     public ArrayList getScheduledPatients() {
 
         ArrayList array_list = new ArrayList();
         SQLiteDatabase db = ourHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME ,null);
-
         cursor.moveToFirst();
-        while (cursor.isAfterLast()==false || cursor.getString(cursor.getColumnIndex(PatientTable.RETURNDATE))!= "") {
+        while (cursor.isAfterLast()==false ) {
 
 
-            array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.NAME)) + (cursor.getString(cursor.getColumnIndex(PatientTable.RETURNDATE))));
+            array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.NAME))+ "\t" + cursor.getString(cursor.getColumnIndex(PatientTable.LNAME)) + "\t"
+                    +(cursor.getString(cursor.getColumnIndex(PatientTable.RETURNDATE))));
+
+            cursor.moveToNext();
+
+        }
+
+
+            return array_list;
+    }
+
+
+    public Cursor searchMyDb(String query){
+        String search_query = "SELECT " + PatientTable.NAME + ", " +
+                PatientTable.LNAME + ", " + PatientTable.AGE + ", " +
+                PatientTable.DISEASE + ", " + PatientTable.PRESCRIPTION + ", " +
+                PatientTable.RETURNDATE + ", " + PatientTable.REMARKS +
+                " FROM " + PatientTable.TABLE_NAME + " WHERE " + PatientTable.NAME + " LIKE '%" + query + "%'";
+        SQLiteDatabase db = ourHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(search_query, null);
+        return cursor;
+    }
+
+    public ArrayList getListview() {
+
+        ArrayList array_list = new ArrayList();
+        SQLiteDatabase db = ourHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + PatientTable.TABLE_NAME ,null);
+        cursor.moveToFirst();
+        while (cursor.isAfterLast()==false){
+
+            array_list.add(cursor.getString(cursor.getColumnIndex(PatientTable.ID)) + ": "
+                    + cursor.getString(cursor.getColumnIndex(PatientTable.NAME)) + "\t" + cursor.getString(cursor.getColumnIndex(PatientTable.LNAME)));
 
             cursor.moveToNext();
         }
-            return array_list;
+
+        return array_list;
     }
 
 }
